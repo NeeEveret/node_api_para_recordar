@@ -1,1 +1,13 @@
 npm init --yes crear el package .json
+
+inicia con "node app.js"
+
+
+
+explicame que hacen estos comandos echo "# node_api_para_recordar" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/NeeEveret/node_api_para_recordar.git
+git push -u origin main
