@@ -5,6 +5,23 @@ const cors = require("cors");
 
 app.use(cors()); // 🔥 Permite peticiones desde cualquier origen
 
+// Dominios permitidos
+const allowedOrigins = [
+  "http://localhost:3000",  // tu React en desarrollo
+  "https://mi-frontend.vercel.app", // tu frontend en producción (ajusta el dominio real)
+  "http://localhost:3000/deploy1"
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("No permitido por CORS,lo siento manin"));
+    }
+  }
+}));
+
 app.get('/', (req, res) =>{
     res.send('index page, gaaaa!')
     res.send("API funcionando 🚀");
