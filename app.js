@@ -3,14 +3,15 @@ const app = express();
 const port =3000
 const cors = require("cors");
 
-app.use(cors()); // 🔥 Permite peticiones desde cualquier origen
-
 // Dominios permitidos
 const allowedOrigins = [
   "http://localhost:3000",  // tu React en desarrollo
   "https://mi-frontend.vercel.app", // tu frontend en producción (ajusta el dominio real)
   "http://localhost:3000/deploy1"
 ];
+
+
+ // 🔥 Permite peticiones desde cualquier origen
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -23,8 +24,7 @@ app.use(cors({
 }));
 
 app.get('/', (req, res) =>{
-    res.send('index page, gaaaa!')
-    res.send("API funcionando 🚀");
+    res.send('index page, gaaaa!🚀')
 })
 app.get('/random/:numeroInicial/:numeroFinal', (req,res) =>{
 
@@ -39,7 +39,7 @@ app.get('/random/:numeroInicial/:numeroFinal', (req,res) =>{
     }
     const result = Math.floor(Math.random() * (max - min) + min)
     
-    res.json({"randomNumber": result})
+    // res.json({"randomNumber": result})
     res.send(result)
 })
 
