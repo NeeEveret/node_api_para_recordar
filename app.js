@@ -5,8 +5,8 @@ const cors = require("cors");
 const fs = require("fs");
 const path = require("path"); 
 const natural = require("natural");
-
-
+// import 'dotenv/config';             // o require('dotenv').config()
+require('dotenv').config()
 // Dominios permitidos
 const allowedOrigins = [
   "http://localhost:3000",  // tu React en desarrollo
@@ -21,14 +21,14 @@ const allowedOrigins = [
 
  // 🔥 Permite peticiones desde cualquier origen
 
-app.use(cors({
+app.use(cors({  
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error("No permitido por CORS,lo siento manin"));
     }
-  }
+  } 
 }));
 app.use(express.json());
 
@@ -85,8 +85,9 @@ app.post('/teto', async (req,res) =>{
 
   //////////////////
   // Tu API Key de Google Cloud (creada en la consola)
-  const API_KEY = "AIzaSyCkl0YsqvMeIC6SetNCErKfA-pmhFaiufY"
-  //Endpoint de la API
+  // const API_KEY = "AIzaSyCkl****************************"//pues para no comprometer la key la invocare desde un archivo local que no se sube al repositorio
+                                                            //en el host estara como variable de entorno con el mismo dato
+  const API_KEY =process.env.GOOGLE_API_KEY;
   const laUrl = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${API_KEY}`
   //data agota tiene el json  con input, voice y audioConfig para enviar a la api de Google
   //modificar el json que enviaron para tokenizar los textos, que ahora estan en "oraciones"

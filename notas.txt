@@ -5,9 +5,13 @@ inicia con "node app.js"
 
 
 explicame que hacen estos comandos echo "# node_api_para_recordar" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git branch -M main
+git init                crea la carpeta oculta .git/, donde Git guarda el historial, commits, ramas, etc.
+git add README.md       añade el readme para envierlo en el comit
+git commit -m "first commit"        Crea un commit con cambios en el staging area.
+                                    -m indica el mensaje del commit: "first commit".
+git branch -M main                  Renombra la rama actual (llamada master) a main.
+                
 git remote add origin https://github.com/NeeEveret/node_api_para_recordar.git
+                    Conecta tu repo local con un repositorio de GitHub.
+                    origin es el alias para esa URL.Así puedes hacer git push origin main sin escribir la URL completa cada vez.
 git push -u origin main
