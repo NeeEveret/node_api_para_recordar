@@ -15,3 +15,26 @@ git remote add origin https://github.com/NeeEveret/node_api_para_recordar.git
                     Conecta tu repo local con un repositorio de GitHub.
                     origin es el alias para esa URL.Así puedes hacer git push origin main sin escribir la URL completa cada vez.
 git push -u origin main
+
+
+
+
+
+
+
+por si borraste un archivo del repo
+🔹 1. Mantener tu app.js (subirlo otra vez a GitHub)
+
+Si quieres conservar app.js y que vuelva a aparecer en el repositorio remoto:
+
+git pull origin main      # traes los cambios del remoto
+# resuelves conflictos si aparecen
+git add app.js            # vuelves a añadir tu archivo
+git commit -m "Restauro app.js"
+git push origin main
+
+En Node.js hay dos formas principales de escribir módulos:
+
+1-CommonJS (el clásico de Node.js) ->Usas require y module.exports. Es el modo por defecto de Node.js.
+
+2-ESM (ECMAScript Modules, moderno) -> Usas import y export.
