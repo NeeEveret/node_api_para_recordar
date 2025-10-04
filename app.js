@@ -1,10 +1,13 @@
+
 // 🐀🐁
+import fetch from "node-fetch";
 import express from "express";
 import cors from "cors";
 import fs from "fs";
 import path from "path";
 import natural from "natural";
 import 'dotenv/config'; 
+import { VertexAI } from "@google-cloud/vertexai";
 //Esto es ESM carga las variables de entorno// o require('dotenv').config() pero es para CommonJS
 const app = express();
 const port = 4000;
@@ -53,6 +56,9 @@ app.get('/random/:numeroInicial/:numeroFinal', (req,res) =>{
 })
 
 app.post('/teto', async (req,res) =>{   //recibe el json con datos y config para pasarlo a la api de google
+  console.log("req es");
+  
+  console.log(req.body);
   
   const API_KEY =process.env.GOOGLE_API_KEY;  //traer la key de una variable de entorno
   const laUrl = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${API_KEY}`
@@ -64,7 +70,12 @@ app.post('/teto', async (req,res) =>{   //recibe el json con datos y config para
   //igual pasa en la prueba que da google, a veces no carga lo que envias y  demora. O graba mal
   const tokenizer = new natural.SentenceTokenizer();  
   const oraciones = tokenizer.tokenize(textoParaUsar);// el texto en oraciones, asi que habra varias oraciones
-
+  ///////////////////
+  // (async () => {
+  //   const res = await fetch(`https://texttospeech.googleapis.com/v1/voices?key=${API_KEY}`);
+  //   const data = await res.json();
+  //   console.log(data);
+  // })();
   /////////////////
   // const API_KEY = "AIzaSyCkl*****"//la key la invocare desde un archivo local que no se sube al repositorio
                                     //en el host estara como variable de entorno con el mismo dato
@@ -85,6 +96,7 @@ app.post('/teto', async (req,res) =>{   //recibe el json con datos y config para
         body: JSON.stringify(dataJSON)
       })
       const dataRes = await respuesta.json()  //aqui se guardará la respuesta de la APIgoogle
+      console.log("la respuesta es ",dataRes);
       
       if(dataRes.audioContent){ //dataRes.audioContent es type Base64
         audios.push(dataRes.audioContent) //dataRes.audioContent //string
@@ -94,10 +106,19 @@ app.post('/teto', async (req,res) =>{   //recibe el json con datos y config para
     }
   }
 
+  // res.json({
+  // mensajeeee: "✅ Audios generados",
+  // audios:audios, // el array de audios en base64
+  // });
+//////////////////////////////////////////////////////////////
+ 
+
   res.json({
   mensajeeee: "✅ Audios generados",
   audios:audios, // el array de audios en base64
-});
+  });
+//////////////
+
 })
 
 
