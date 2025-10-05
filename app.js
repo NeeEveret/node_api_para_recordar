@@ -56,8 +56,15 @@ app.get('/random/:numeroInicial/:numeroFinal', (req,res) =>{
 })
 
 app.post('/teto', async (req,res) =>{   //recibe el json con datos y config para pasarlo a la api de google
-  console.log("req es");
-  
+  //aqui para probar que se ha llegado bien a la ruta
+  if (req.body.prueba) {
+    console.log("📥 Petición de prueba recibida:", req.body);
+    return res.json({
+      prueba: true,
+      mensaje: "✅ Todo ok (servidor en línea)"
+    });
+  }
+    
   console.log(req.body);
   
   const API_KEY =process.env.GOOGLE_API_KEY;  //traer la key de una variable de entorno
@@ -96,7 +103,7 @@ app.post('/teto', async (req,res) =>{   //recibe el json con datos y config para
         body: JSON.stringify(dataJSON)
       })
       const dataRes = await respuesta.json()  //aqui se guardará la respuesta de la APIgoogle
-      console.log("la respuesta es ",dataRes);
+      // console.log("la respuesta es ",dataRes);
       
       if(dataRes.audioContent){ //dataRes.audioContent es type Base64
         audios.push(dataRes.audioContent) //dataRes.audioContent //string
