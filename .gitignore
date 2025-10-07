@@ -2,3 +2,5 @@ node_modules/
 .env
 notas.txt
 app2 copy.js
+voices.json
+voices_grouped.json

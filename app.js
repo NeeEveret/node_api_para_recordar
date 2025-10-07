@@ -1,4 +1,3 @@
-
 // 🐀🐁
 import fetch from "node-fetch";
 import express from "express";
@@ -7,7 +6,6 @@ import fs from "fs";
 import path from "path";
 import natural from "natural";
 import 'dotenv/config'; 
-import { VertexAI } from "@google-cloud/vertexai";
 //Esto es ESM carga las variables de entorno// o require('dotenv').config() pero es para CommonJS
 const app = express();
 const port = 4000;
@@ -61,7 +59,7 @@ app.post('/teto', async (req,res) =>{   //recibe el json con datos y config para
     console.log("📥 Petición de prueba recibida:", req.body);
     return res.json({
       prueba: true,
-      mensaje: "✅ Todo ok (servidor en línea)"
+      mensaje: "✅ Todo ok (servidor en línea)" 
     });
   }
     
@@ -77,12 +75,25 @@ app.post('/teto', async (req,res) =>{   //recibe el json con datos y config para
   //igual pasa en la prueba que da google, a veces no carga lo que envias y  demora. O graba mal
   const tokenizer = new natural.SentenceTokenizer();  
   const oraciones = tokenizer.tokenize(textoParaUsar);// el texto en oraciones, asi que habra varias oraciones
-  ///////////////////
+  ///////////////////   PARA VER LAS LISTA DE VOCES 
   // (async () => {
   //   const res = await fetch(`https://texttospeech.googleapis.com/v1/voices?key=${API_KEY}`);
   //   const data = await res.json();
   //   console.log(data);
   // })();
+  (async () => {
+    try {
+      const res = await fetch(`https://texttospeech.googleapis.com/v1/voices?key=${API_KEY}`);
+      const data = await res.json();
+
+      // Guardar el JSON en un archivo
+      fs.writeFileSync("voices.json", JSON.stringify(data, null, 2), "utf-8");
+
+      console.log("✅ Archivo voices.json guardado correctamente");
+    } catch (err) {
+      console.error("❌ Error al obtener o guardar el JSON:", err);
+    }
+  })();
   /////////////////
   // const API_KEY = "AIzaSyCkl*****"//la key la invocare desde un archivo local que no se sube al repositorio
                                     //en el host estara como variable de entorno con el mismo dato
@@ -128,9 +139,43 @@ app.post('/teto', async (req,res) =>{   //recibe el json con datos y config para
 
 })
 
+app.get('/listVoz', async (req,res) =>{
+  try {
+    const apiKey = process.env.GOOGLE_API_KEY;;  //traer la key de una variable de entorno
+    const respuestaAPI = await fetch(
+      `https://texttospeech.googleapis.com/v1/voices?key=${apiKey}`
+    );
+    const data = await respuestaAPI.json();
+    if (data.voices) {
+      let dataJsonLCodes = data.voices;
+      let listLCodes = {}; // Objeto que almacenará idiomas y sus voces
+//////////////////////////////////////////////////////////////
+      for (const item of dataJsonLCodes) {
+        // Convertir el array de languageCodes a un string (ej: "en-US")
+        const lang = item.languageCodes[0];
 
+        // Si no existe aún el idioma, lo creamos
+        if (!listLCodes[lang]) {
+          listLCodes[lang] = [];
+        }
+
+        // Agregamos la voz dentro del idioma correspondiente
+        listLCodes[lang].push(item);
+      }
+    // Guardar el resultado en un nuevo archivo
+    // fs.writeFileSync("./voices_grouped.json", JSON.stringify(listLCodes, null, 2));
+      res.json(listLCodes);
+//////////////////////////////////////////////////////////////
+    }
+  } catch (err) {
+    console.error("Error al obtener voces:", err);
+  }
+})
 
 app.listen(port,() => {
     console.log(`server on port${port},si🚀`);
     
 })
+
+
+///////////////////////////////////
