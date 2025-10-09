@@ -76,27 +76,28 @@ app.post('/teto', async (req,res) =>{   //recibe el json con datos y config para
   const tokenizer = new natural.SentenceTokenizer();  
   const oraciones = tokenizer.tokenize(textoParaUsar);// el texto en oraciones, asi que habra varias oraciones
   ///////////////////   PARA VER LAS LISTA DE VOCES 
-  // (async () => {
-  //   const res = await fetch(`https://texttospeech.googleapis.com/v1/voices?key=${API_KEY}`);
-  //   const data = await res.json();
-  //   console.log(data);
-  // })();
-  (async () => {
-    try {
-      const res = await fetch(`https://texttospeech.googleapis.com/v1/voices?key=${API_KEY}`);
-      const data = await res.json();
+    // (async () => {
+    //   const res = await fetch(`https://texttospeech.googleapis.com/v1/voices?key=${API_KEY}`);
+    //   const data = await res.json();
+    //   console.log(data);
+    // })();
+    ////////////////////////guardar
+    // (async () => {
+    //   try {
+    //     const res = await fetch(`https://texttospeech.googleapis.com/v1/voices?key=${API_KEY}`);
+    //     const data = await res.json();
 
-      // Guardar el JSON en un archivo
-      fs.writeFileSync("voices.json", JSON.stringify(data, null, 2), "utf-8");
+    //     // Guardar el JSON en un archivo
+    //     fs.writeFileSync("voices.json", JSON.stringify(data, null, 2), "utf-8");
 
-      console.log("✅ Archivo voices.json guardado correctamente");
-    } catch (err) {
-      console.error("❌ Error al obtener o guardar el JSON:", err);
-    }
-  })();
-  /////////////////
-  // const API_KEY = "AIzaSyCkl*****"//la key la invocare desde un archivo local que no se sube al repositorio
-                                    //en el host estara como variable de entorno con el mismo dato
+    //     console.log("✅ Archivo voices.json guardado correctamente");
+    //   } catch (err) {
+    //     console.error("❌ Error al obtener o guardar el JSON:", err);
+    //   }
+    // })();
+    /////////////////
+    // const API_KEY = "AIzaSyCkl*****"//la key la invocare desde un archivo local que no se sube al repositorio
+                                      //en el host estara como variable de entorno con el mismo dato
 
   //modificar el json que enviaron para tokenizar los textos, que ahora estan en "oraciones"
   const audios = []; //aqui se guardaran todos las oraciones "grabadas" a base64
@@ -138,6 +139,23 @@ app.post('/teto', async (req,res) =>{   //recibe el json con datos y config para
 //////////////
 
 })
+app.post('/tetob', async (req,res)=>{
+  //aqui para probar que se ha llegado bien a la ruta
+  if (req.body.prueba) {
+    console.log("📥 Petición de prueba recibida:", req.body);
+    return res.json({
+      prueba: true,
+      mensaje: "✅ Todo ok (servidor en línea)" 
+    });
+  }
+  
+  const API_KEY =process.env.GOOGLE_API_KEY;  //traer la key de una variable de entorno
+  const laUrl = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${API_KEY}`
+  
+  const data = req.body;  //data agota tiene el json  con input, voice y audioConfig para enviar a la api de Google
+  const textoParaUsar = data.voz   //el texto que se usara para grabar
+  
+}) 
 
 app.get('/listVoz', async (req,res) =>{
   try {
@@ -153,7 +171,7 @@ app.get('/listVoz', async (req,res) =>{
       for (const item of dataJsonLCodes) {
         // Convertir el array de languageCodes a un string (ej: "en-US")
         const lang = item.languageCodes[0];
-
+        
         // Si no existe aún el idioma, lo creamos
         if (!listLCodes[lang]) {
           listLCodes[lang] = [];
@@ -172,10 +190,14 @@ app.get('/listVoz', async (req,res) =>{
   }
 })
 
+
+
 app.listen(port,() => {
     console.log(`server on port${port},si🚀`);
     
-})
+});
+
+
 
 
 ///////////////////////////////////
